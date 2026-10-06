@@ -1,0 +1,141 @@
+<!-- ============================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Flight</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        h1 { color: #1e3c72; margin-bottom: 30px; text-align: center; }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #1e3c72;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✈️ Create New Flight</h1>
+
+        <form action="/create_flight" method="POST">
+            <div class="form-group">
+                <label>Flight Number *</label>
+                <input type="text" name="flight_number" required>
+            </div>
+
+            <div class="form-group">
+                <label>Airplane *</label>
+                <select name="plane_id" required>
+                    <option value="">Select Airplane</option>
+                    {% for airplane in airplanes %}
+                    <option value="{{airplane.plane_id}}">{{airplane.plane_id}} - {{airplane.manufacturer}} ({{airplane.seat_capacity}} seats)</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Departure Airport *</label>
+                    <select name="departure_airport" required>
+                        <option value="">Select Airport</option>
+                        {% for airport in airports %}
+                        <option value="{{airport.airport_code}}">{{airport.airport_code}} - {{airport.city}}, {{airport.country}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Arrival Airport *</label>
+                    <select name="arrival_airport" required>
+                        <option value="">Select Airport</option>
+                        {% for airport in airports %}
+                        <option value="{{airport.airport_code}}">{{airport.airport_code}} - {{airport.city}}, {{airport.country}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Departure Date & Time *</label>
+                    <input type="datetime-local" name="departure_datetime" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Arrival Date & Time *</label>
+                    <input type="datetime-local" name="arrival_datetime" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Base Price ($) *</label>
+                    <input type="number" name="base_price" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Flight Status *</label>
+                    <select name="flight_status" required>
+                        <option value="On-Time">On-Time</option>
+                        <option value="Delayed">Delayed</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Create Flight</button>
+        </form>
+
+        <a href="/staff_home" class="back-link">← Cancel</a>
+    </div>
+</body>
+</html>
+
+<!-- ============================================ -->

@@ -1,0 +1,132 @@
+<!-- ============================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Flights</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        h1 { color: #1e3c72; margin-bottom: 20px; }
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .filter-tab {
+            padding: 10px 20px;
+            background: #e9ecef;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        .filter-tab.active {
+            background: #1e3c72;
+            color: white;
+        }
+        .flight-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .flight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: #1e3c72;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>My Flights</h1>
+            <div class="filter-tabs">
+                <a href="{{ url_for('my_flights', filter='future') }}" class="filter-tab {% if filter_type == 'future' %}active{% endif %}">Upcoming</a>
+                <a href="{{ url_for('my_flights', filter='past') }}" class="filter-tab {% if filter_type == 'past' %}active{% endif %}">Past</a>
+            </div>
+        </div>
+
+        {% if flights %}
+            {% for flight in flights %}
+            <div class="flight-card">
+                <div class="flight-header">
+                    <div>
+                        <h3 style="color: #1e3c72;">{{flight.airline_name}} {{flight.flight_number}}</h3>
+                        <p style="color: #666;">Ticket ID: {{flight.ticket_id}}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 1.3em; color: #28a745; font-weight: bold;">${{flight.base_price}}</div>
+                        <div style="color: #666; font-size: 0.9em;">Purchased: {{flight.purchase_datetime.strftime('%b %d, %Y')}}</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center;">
+                    <div>
+                        <div style="font-size: 1.3em; font-weight: bold;">{{flight.departure_datetime.strftime('%H:%M')}}</div>
+                        <div style="color: #666;">{{flight.dep_city}} ({{flight.dep_code}})</div>
+                        <div style="color: #999; font-size: 0.9em;">{{flight.departure_datetime.strftime('%b %d, %Y')}}</div>
+                    </div>
+
+                    <div style="font-size: 2em; color: #1e3c72;">→</div>
+
+                    <div style="text-align: right;">
+                        <div style="font-size: 1.3em; font-weight: bold;">{{flight.arrival_datetime.strftime('%H:%M')}}</div>
+                        <div style="color: #666;">{{flight.arr_city}} ({{flight.arr_code}})</div>
+                        <div style="color: #999; font-size: 0.9em;">{{flight.arrival_datetime.strftime('%b %d, %Y')}}</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <span style="padding: 5px 15px; background: {% if flight.flight_status == 'On-Time' %}#d4edda; color: #155724{% else %}#f8d7da; color: #721c24{% endif %}; border-radius: 15px; font-size: 0.85em; font-weight: 600;">
+                        {{flight.flight_status}}
+                    </span>
+                    
+                    {% if filter_type == 'past' %}
+                    <a href="{{ url_for('rate_flight', airline=flight.airline_name, flight_num=flight.flight_number, departure_time=flight.departure_datetime) }}" class="btn" style="float: right;">Rate Flight</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="background: white; border-radius: 12px; padding: 40px; text-align: center; color: #666;">
+                <p>No {% if filter_type == 'past' %}past{% else %}upcoming{% endif %} flights found.</p>
+            </div>
+        {% endif %}
+
+        <a href="{{ url_for('customer_home') }}" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>

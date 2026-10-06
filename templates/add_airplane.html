@@ -1,0 +1,98 @@
+<!-- ============================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Airplane</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 { color: #1e3c72; margin-bottom: 30px; text-align: center; }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        input:focus {
+            outline: none;
+            border-color: #1e3c72;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #1e3c72;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛫 Add New Airplane</h1>
+
+        <form action="/add_airplane" method="POST">
+            <div class="form-group">
+                <label>Airplane ID *</label>
+                <input type="text" name="plane_id" placeholder="e.g., JB004" required>
+            </div>
+
+            <div class="form-group">
+                <label>Manufacturer *</label>
+                <input type="text" name="manufacturer" placeholder="e.g., Boeing 737" required>
+            </div>
+
+            <div class="form-group">
+                <label>Seat Capacity *</label>
+                <input type="number" name="seat_capacity" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label>Plane Age (years) *</label>
+                <input type="number" name="plane_age" min="0" required>
+            </div>
+
+            <button type="submit" class="btn">Add Airplane</button>
+        </form>
+
+        <a href="/view_airplanes" class="back-link">← Back to Airplanes</a>
+    </div>
+</body>
+</html>
+
+<!-- ============================================ -->

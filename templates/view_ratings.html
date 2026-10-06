@@ -1,0 +1,129 @@
+<!-- ============================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flight Ratings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        h1 { color: #1e3c72; margin-bottom: 15px; }
+        .flight-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .avg-rating {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .avg-rating .rating-number {
+            font-size: 3em;
+            font-weight: bold;
+        }
+        .avg-rating .stars {
+            font-size: 2em;
+            color: #ffc107;
+        }
+        .rating-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .rating-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .stars {
+            color: #ffc107;
+            font-size: 1.3em;
+        }
+        .customer-name {
+            font-weight: bold;
+            color: #1e3c72;
+        }
+        .comment {
+            color: #666;
+            line-height: 1.6;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Flight Ratings & Reviews</h1>
+            {% if flight %}
+            <div class="flight-info">
+                <p><strong>Flight:</strong> {{flight.airline_name}} {{flight.flight_number}}</p>
+                <p><strong>Route:</strong> {{flight.dep_city}} → {{flight.arr_city}}</p>
+                <p><strong>Departure:</strong> {{flight.departure_datetime.strftime('%B %d, %Y at %H:%M')}}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if avg_data and avg_data.total_ratings > 0 %}
+        <div class="avg-rating">
+            <div class="rating-number">{{avg_data.avg_rating|round(1)}}/5.0</div>
+            <div class="stars">
+                {% for i in range(avg_data.avg_rating|round|int) %}★{% endfor %}
+                {% for i in range(5 - (avg_data.avg_rating|round|int)) %}☆{% endfor %}
+            </div>
+            <p style="margin-top: 10px;">Based on {{avg_data.total_ratings}} review(s)</p>
+        </div>
+
+        {% if ratings %}
+            {% for rating in ratings %}
+            <div class="rating-card">
+                <div class="rating-header">
+                    <span class="customer-name">{{rating.name}}</span>
+                    <span class="stars">
+                        {% for i in range(rating.rate) %}★{% endfor %}
+                        {% for i in range(5 - rating.rate) %}☆{% endfor %}
+                    </span>
+                </div>
+                <div class="comment">{{rating.r_comment}}</div>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        {% else %}
+        <div style="background: white; border-radius: 12px; padding: 40px; text-align: center; color: #666;">
+            <p>No ratings yet for this flight.</p>
+        </div>
+        {% endif %}
+
+        <a href="/staff_flights" class="back-link">← Back to Flights</a>
+    </div>
+</body>
+</html>
+
+<!-- ============================================ -->

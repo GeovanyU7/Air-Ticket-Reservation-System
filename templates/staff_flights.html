@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Flights</title>
+    <style>
+        /* Added a global selector */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 { color: #1e3c72; margin-bottom: 0; }
+        p.lead { color: #666; margin-top: 6px; }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .filter-tab {
+            padding: 8px 14px;
+            background: #e9ecef;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        .filter-tab.active {
+            background: #1e3c72;
+            color: white;
+        }
+
+        .flights-table {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        th {
+            background: #1e3c72;
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:hover { background: #f8f9fa; }
+
+        .btn {
+            padding: 8px 12px;
+            background: #1e3c72;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin: 2px;
+        }
+
+        .status-form { display: inline-block; }
+        .status-form select {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-right: 5px;
+        }
+        .status-form button {
+            padding: 6px 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Responsive Table */
+        @media (max-width: 800px) {
+            .header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .filter-tabs { flex-wrap: wrap; }
+
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead { display: none; }
+
+            tr {
+                margin-bottom: 12px;
+                padding: 15px;
+                background: #fff;
+                border-radius: 10px;
+            }
+            td {
+                border: none;
+                padding: 6px 0;
+            }
+            td::before {
+                font-weight: 600;
+                display: inline-block;
+                width: 140px;
+                color: #333;
+            }
+            td:nth-of-type(1)::before { content: 'Flight #'; }
+            td:nth-of-type(2)::before { content: 'Route'; }
+            td:nth-of-type(3)::before { content: 'Departure'; }
+            td:nth-of-type(4)::before { content: 'Arrival'; }
+            td:nth-of-type(5)::before { content: 'Status'; }
+            td:nth-of-type(6)::before { content: 'Tickets Sold'; }
+            td:nth-of-type(7)::before { content: 'Actions'; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="header">
+            <div>
+                <h1>Manage Flights</h1>
+                <p class="lead">Manage and update flights for {{ session.airline_name }}</p>
+            </div>
+            <div>
+                <a href="{{ url_for('staff_home') }}" class="btn">← Back to Home</a>
+            </div>
+        </div>
+
+        <div class="filter-tabs">
+            <a href="{{ url_for('staff_flights', filter='future') }}"
+               class="filter-tab {% if filter_type == 'future' %}active{% endif %}">
+               Future
+            </a>
+
+            <a href="{{ url_for('staff_flights', filter='past') }}"
+               class="filter-tab {% if filter_type == 'past' %}active{% endif %}">
+               Past
+            </a>
+
+            <a href="{{ url_for('staff_flights', filter='all') }}"
+               class="filter-tab {% if filter_type == 'all' %}active{% endif %}">
+               All
+            </a>
+        </div>
+
+        <div class="flights-table">
+            {% if flights %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Flight #</th>
+                        <th>Route</th>
+                        <th>Departure</th>
+                        <th>Arrival</th>
+                        <th>Status</th>
+                        <th>Tickets Sold</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for flight in flights %}
+                    <tr>
+                        <td><strong>{{ flight.flight_number }}</strong></td>
+                        
+                        <td>{{ flight.dep_city }} → {{ flight.arr_city }}</td>
+                        
+                        <td>{{ flight.departure_datetime.strftime('%b %d, %Y %H:%M') }}</td>
+                        
+                        <td>{{ flight.arrival_datetime.strftime('%b %d, %Y %H:%M') }}</td>
+
+                        <td>
+                            <form action="{{ url_for('change_status', airline=flight.airline_name, flight_num=flight.flight_number, departure_time=flight.departure_datetime) }}"
+                                  method="POST"
+                                  class="status-form">
+
+                                <select name="new_status">
+                                    <option value="On-Time" {% if flight.flight_status == 'On-Time' %}selected{% endif %}>On-Time</option>
+                                    <option value="Delayed" {% if flight.flight_status == 'Delayed' %}selected{% endif %}>Delayed</option>
+                                    <!-- REMOVED Cancelled option to meet PDF specs and prevent errors -->
+                                </select>
+                                
+                                <button type="submit">Update</button>
+                            </form>
+                        </td>
+
+                        <td>{{ flight.tickets_sold }} / {{ flight.seat_capacity }}</td>
+
+                        <td>
+                            <a class="btn"
+                               href="{{ url_for('flight_customers', airline=flight.airline_name, flight_num=flight.flight_number, departure_time=flight.departure_datetime) }}">
+                               Customers
+                            </a>
+                            
+                            <a class="btn"
+                               href="{{ url_for('view_ratings', flight_num=flight.flight_number, departure_time=flight.departure_datetime) }}">
+                               Ratings
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% else %}
+            <p style="text-align: center; color: #666; padding: 40px;">No flights found.</p>
+            {% endif %}
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!-- ============================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Purchase Ticket</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .flight-details {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .payment-form {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 { color: #1e3c72; margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .price-summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Purchase Ticket</h1>
+
+        <div class="flight-details">
+            <h2>Flight Details</h2>
+            <p><strong>Flight:</strong> {{flight.airline_name}} {{flight.flight_number}}</p>
+            <p><strong>Route:</strong> {{flight.dep_city}} ({{flight.dep_code}}) → {{flight.arr_city}} ({{flight.arr_code}})</p>
+            <p><strong>Departure:</strong> {{flight.departure_datetime.strftime('%B %d, %Y at %H:%M')}}</p>
+            <p><strong>Arrival:</strong> {{flight.arrival_datetime.strftime('%B %d, %Y at %H:%M')}}</p>
+            <p><strong>Available Seats:</strong> {{flight.available_seats}}/{{flight.seat_capacity}}</p>
+            
+            <div class="price-summary">
+                <h3 style="color: #1e3c72;">Price: ${{flight.base_price}}</h3>
+            </div>
+        </div>
+
+        <div class="payment-form">
+            <h2>Payment Information</h2>
+            <form action="/purchase_ticket/{{flight.airline_name}}/{{flight.flight_number}}/{{flight.departure_datetime}}" method="POST">
+                <div class="form-group">
+                    <label>Card Type</label>
+                    <select name="card_type" required>
+                        <option value="Visa">Visa</option>
+                        <option value="MasterCard">MasterCard</option>
+                        <option value="Amex">American Express</option>
+                        <option value="Discover">Discover</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Card Number</label>
+                    <input type="text" name="card_number" placeholder="XXXX-XXXX-XXXX-XXXX" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Name on Card</label>
+                    <input type="text" name="name_on_card" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Expiration Date</label>
+                    <input type="date" name="card_expiration" required>
+                </div>
+
+                <button type="submit" class="btn">Complete Purchase</button>
+            </form>
+        </div>
+
+        <a href="/search_flights" class="back-link">← Cancel and go back</a>
+    </div>
+</body>
+</html>
+
+<!-- ============================================ -->

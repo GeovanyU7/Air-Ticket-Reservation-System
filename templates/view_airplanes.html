@@ -1,0 +1,99 @@
+<!-- ============================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Airplanes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 { color: #1e3c72; }
+        .btn {
+            padding: 12px 25px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .airplanes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .airplane-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .airplane-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        .airplane-id {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+        .airplane-detail {
+            color: #666;
+            margin: 8px 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{session.airline_name}} Fleet</h1>
+            <a href="/add_airplane" class="btn">+ Add New Airplane</a>
+        </div>
+
+        {% if airplanes %}
+        <div class="airplanes-grid">
+            {% for airplane in airplanes %}
+            <div class="airplane-card">
+                <div class="airplane-id">🛫 {{airplane.plane_id}}</div>
+                <div class="airplane-detail"><strong>Manufacturer:</strong> {{airplane.manufacturer}}</div>
+                <div class="airplane-detail"><strong>Seat Capacity:</strong> {{airplane.seat_capacity}} seats</div>
+                <div class="airplane-detail"><strong>Age:</strong> {{airplane.plane_age}} years</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="background: white; border-radius: 12px; padding: 40px; text-align: center; color: #666;">
+            <p>No airplanes in fleet. Add your first airplane!</p>
+        </div>
+        {% endif %}
+
+        <a href="/staff_home" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>
+
+<!-- ============================================ -->
